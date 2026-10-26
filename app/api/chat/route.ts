@@ -8,6 +8,7 @@ import { anthropic } from "@ai-sdk/anthropic";
 import { limitHistory } from "@/lib/chat-history";
 import { verifySession } from "@/lib/session";
 import { validateMessages } from "@/lib/chat-validation";
+import { checkRateLimit } from "@/lib/rate-limit";
 import {
   TIMEOUT_MS,
   toErrorMessage,
@@ -34,6 +35,13 @@ export async function POST(req: Request) {
 
   if (!validation.ok) {
     return new Response(validation.error, { status: 400 });
+  }
+
+  // 正しい質問だけを数える（形式の間違いで回数を使わないように、入力検証の後に確かめる）
+  const rateLimit = await checkRateLimit(req);
+
+  if (!rateLimit.ok) {
+    return new Response(rateLimit.message, { status: rateLimit.status });
   }
 
   const result = streamText({

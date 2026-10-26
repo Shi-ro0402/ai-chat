@@ -36,6 +36,15 @@ describe("ChatError", () => {
     expect(screen.getByText("メッセージが空です。")).toBeDefined();
   });
 
+  it("回数制限（429）は、サーバーのメッセージを表示する", () => {
+    const message =
+      "短時間に送信できる回数（10分間に5回）を超えました。約3分後に再試行してください。";
+
+    render(<ChatError error={apiError(429, message)} onRetry={vi.fn()} />);
+
+    expect(screen.getByText(message)).toBeDefined();
+  });
+
   it("ログインの期限切れ（401）", () => {
     render(
       <ChatError error={apiError(401, "ログインが必要です。")} onRetry={vi.fn()} />,

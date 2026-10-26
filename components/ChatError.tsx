@@ -13,8 +13,10 @@ function getErrorMessage(error: Error) {
   }
 
   if (APICallError.isInstance(error)) {
-    // 400：サーバー側の入力検証で弾かれた（メッセージはサーバーが作成）
-    if (error.statusCode === 400) {
+    // 400：サーバー側の入力検証で弾かれた
+    // 429：10分間に送れる回数を超えた
+    // （どちらもメッセージはサーバーが作成）
+    if (error.statusCode === 400 || error.statusCode === 429) {
       return error.message;
     }
 

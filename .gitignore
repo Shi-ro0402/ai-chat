@@ -32,6 +32,8 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# .env.example はダミー値だけのひな形なので、Gitで共有する
+!.env.example
 
 # vercel
 .vercel
